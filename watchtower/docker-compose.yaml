@@ -41,5 +41,3 @@ services:
 networks:
   proxy:
     external: true
-
-#Doku: https://containrrr.dev/watchtower/

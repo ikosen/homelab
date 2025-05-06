@@ -27,5 +27,3 @@ services:
 networks:
   proxy:
     external: true
-
-#Doku: https://github.com/sct/overseerr

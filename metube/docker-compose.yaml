@@ -18,6 +18,3 @@ services:
 networks:
   proxy:
     external: true
-
-
-#Doku: https://github.com/alexta69/metube

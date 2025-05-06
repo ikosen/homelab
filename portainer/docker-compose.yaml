@@ -18,5 +18,3 @@ services:
 networks:
   proxy:
     external: true
-
-#Doku: https://docs.portainer.io/
