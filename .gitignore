@@ -1,0 +1,7 @@
+**/config/
+**/*.env
+*.bak
+*.log
+*.db
+secrets/
+beszel/

@@ -1,0 +1,18 @@
+services:
+  peanut:
+    image: brandawg93/peanut:latest
+    container_name: peanut
+    restart: unless-stopped
+    ports:
+      - 9998:8080
+    volumes:
+      - /home/sebastian/docker/peanut/config:/config
+    environment:
+      - WEB_PORT=8080
+
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

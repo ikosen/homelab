@@ -1,0 +1,58 @@
+services:
+  paperless:
+    container_name: paperless
+    image: ghcr.io/paperless-ngx/paperless-ngx:latest
+    restart: unless-stopped
+    depends_on:
+      - redis
+    ports:
+      - "8003:8000"
+    volumes:
+      - /home/sebastian/docker/paperless-ngx/config/data:/usr/src/paperless/data
+      - /mnt/dokumente_unraid:/usr/src/paperless/media
+      - /mnt/scanablage_unraid:/usr/src/paperless/consume
+      - /home/sebastian/docker/paperless-ngx/export:/usr/src/paperless/export
+    environment:
+      - PAPERLESS_TIME_ZONE=Europe/Berlin
+      - PAPERLESS_REDIS=redis://redis:6379
+      - PAPERLESS_TASK_WORKERS=2
+      - PAPERLESS_THREADS_PER_WORKER=1
+      - PAPERLESS_OCR_SKIP_ARCHIVE_FILE=with_text
+      - PAPERLESS_OCR_PAGES=1
+      - PAPERLESS_OCR_CLEAN=none
+      - PAPERLESS_WEBSERVER_WORKERS=1
+      - PAPERLESS_ENABLE_NLTK=false
+      - PAPERLESS_OCR_LANGUAGE=deu
+      - PAPERLESS_FILENAME_FORMAT={document_type}/{created_year}/{correspondent}/{created_year_short}-{created_month}-{created_day}-{title}
+      - PAPERLESS_URL=https://paperless.borynsky.de
+      - PAPERLESS_IGNORE_DATES=07.08.1989, 06.09.1988
+      - PAPERLESS_CONSUMER_POLLING=60
+      - PAPERLESS_DISABLE_REGULAR_LOGIN=false
+      - PAPERLESS_SECRET_KEY=${PAPERLESS_SECRET_KEY}
+      - PAPERLESS_APPS=allauth.socialaccount.providers.github
+      - PAPERLESS_SOCIALACCOUNT_PROVIDERS={"github":{"APPS":[{"provider_id":"github","name":"Github","client_id":"${PAPERLESS_SOCIALACCOUNT_PROVIDERS_CLIENT_ID}","secret":"${PAPERLESS_SOCIALACCOUNT_PROVIDERS_SECRET}"}]}}
+      - USERMAP_UID=1000
+      - USERMAP_GID=1000
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.paperless-ngx.rule=Host(`paperless.borynsky.de`)
+      - traefik.http.routers.paperless-ngx.entrypoints=websecure
+      - traefik.http.routers.paperless-ngx.tls=true
+      - traefik.http.routers.paperless-ngx.tls.certresolver=cloudflare
+      - traefik.http.services.paperless-ngx.loadbalancer.server.port=8000
+      - traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=500000000
+    networks:
+      - proxy
+
+  redis:
+    container_name: paperless-redis
+    image: docker.io/library/redis:7
+    restart: unless-stopped
+    volumes:
+      - /home/sebastian/docker/redis-paperless/config:/data
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

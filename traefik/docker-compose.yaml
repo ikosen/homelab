@@ -1,0 +1,27 @@
+services:
+  traefik:
+    container_name: traefik
+    image: traefik
+    restart: unless-stopped
+    ports:
+      - "443:443"
+      - "80:80"
+      - "8183:8080"
+    volumes:
+      - /home/sebastian/docker/traefik/config:/etc/traefik
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - traefik-logs:/var/log/traefik
+    environment:
+      - TZ=Europe/Berlin
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    networks:
+      - proxy
+    extra_hosts:
+      host.docker.internal: "172.17.0.1"
+
+
+networks:
+  proxy:
+    external: true
+volumes:
+  traefik-logs:

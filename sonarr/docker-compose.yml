@@ -1,0 +1,21 @@
+services:
+  sonarr:
+    container_name: sonarr
+    image: linuxserver/sonarr
+    restart: unless-stopped
+    ports:
+      - "8989:8989"
+    volumes:
+      - /home/sebastian/docker/sonarr/config:/config
+      - /mnt/data_unraid:/data
+      - /mnt/data_unraid/media:/media
+    environment:
+      - TZ=Europe/Berlin
+      - PUID=1000
+      - PGID=1000
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

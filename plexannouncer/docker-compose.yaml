@@ -1,0 +1,18 @@
+services:
+  plexannouncer:
+    container_name: plexannouncer
+    image: tenasi/plexannouncer
+    restart: unless-stopped
+    ports:
+      - "32500:32500"
+    environment:
+      - TZ=Europe/Berlin
+      - PLEX_SERVER_URL=${PLEX_SERVER_URL}
+      - PLEX_WEBHOOK_TOKEN=${PLEX_WEBHOOK_TOKEN}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

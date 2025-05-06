@@ -1,0 +1,19 @@
+services:
+  homepage:
+    image: ghcr.io/gethomepage/homepage
+    container_name: homepage
+    restart: unless-stopped
+    ports:
+      - 3001:3000
+    volumes:
+      - /home/sebastian/docker/homepage/config:/app/config # Make sure your local config directory exists
+      - /var/run/docker.sock:/var/run/docker.sock # (optional) For docker integrations
+    environment:
+      - TZ=Europe/Berlin
+      - HOMEPAGE_ALLOWED_HOSTS=10.10.10.62:3001
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

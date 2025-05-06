@@ -1,0 +1,14 @@
+services:
+  plex:
+    container_name: plex
+    image: plexinc/pms-docker
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /home/sebastian/docker/plex/config:/config
+      - /mnt/data_unraid/media:/data
+      - /tmp/plex:/transcode
+    environment:
+      - TZ=Europe/Berlin
+      - PLEX_UID=1000
+      - PLEX_GID=1000

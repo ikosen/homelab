@@ -1,0 +1,16 @@
+services:
+  uptime-kuma:
+    image: louislam/uptime-kuma
+    container_name: uptime-kuma
+    volumes:
+      - ./config:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 3002:3001
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

@@ -1,0 +1,19 @@
+services:
+  tautulli:
+    container_name: tautulli
+    image: linuxserver/tautulli
+    restart: unless-stopped
+    ports:
+      - "8181:8181"
+    volumes:
+      - /home/sebastian/docker/tautulli/config:/config
+    environment:
+      - TZ=Europe/Berlin
+      - PUID=1000
+      - PGID=1000
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

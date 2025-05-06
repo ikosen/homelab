@@ -1,0 +1,20 @@
+services:
+  prowlarr:
+    container_name: prowlarr
+    image: linuxserver/prowlarr
+    restart: unless-stopped
+    ports:
+      - "9696:9696"
+    volumes:
+      - /home/sebastian/docker/prowlarr/config:/config
+    environment:
+      - TZ=Europe/Berlin
+      - PUID=99
+      - PGID=100
+      - UMASK=022
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true

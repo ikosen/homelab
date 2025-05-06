@@ -1,0 +1,45 @@
+services:
+  watchtower:
+    container_name: watchtower
+    image: beatkind/watchtower
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      TZ: Europe/Berlin
+      # DOCKER_HOST: "tcp://10.10.10.4:2375"
+      WATCHTOWER_CLEANUP: "true"
+      WATCHTOWER_SCHEDULE: 0 0 14 * * 0
+      WATCHTOWER_ROLLING_RESTART: "true"
+      WATCHTOWER_TIMEOUT: 30s
+      WATCHTOWER_INCLUDE_RESTARTING: "true"
+      WATCHTOWER_INCLUDE_STOPPED: "true"
+      # WATCHTOWER_RUN_ONCE: "true"
+      WATCHTOWER_NO_STARTUP_MESSAGE: "true"
+      # WATCHTOWER_NOTIFICATIONS: "shoutrrr"
+      WATCHTOWER_NOTIFICATION_REPORT: "true"
+      # WATCHTOWER_DEBUG: "true"
+      WATCHTOWER_NOTIFICATION_URL: >
+        discord://${WATCHTOWER_NOTIFICATION_URL_PART}?SplitLines=No
+      WATCHTOWER_NOTIFICATION_TEMPLATE: >
+        {{- if .Report -}}
+          {{- with .Report -}}
+        {{len .Scanned}} scanned, {{len .Updated}} updated, {{len .Failed}} failed
+              {{- range .Updated}}
+        - {{.Name}} ({{.ImageName}}): {{.CurrentImageID.ShortID}} updated to {{.LatestImageID.ShortID}}
+              {{- end -}}
+              {{- range .Skipped}}
+        - {{.Name}} ({{.ImageName}}): {{.State}}: {{.Error}}
+              {{- end -}}
+              {{- range .Failed}}
+        - {{.Name}} ({{.ImageName}}): {{.State}}: {{.Error}}
+              {{- end -}}
+            {{- end -}}
+          {{- end -}}
+    networks:
+      - proxy
+networks:
+  proxy:
+    external: true
+
+#Doku: https://containrrr.dev/watchtower/

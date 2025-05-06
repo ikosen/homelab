@@ -1,0 +1,31 @@
+services:
+  overseerr:
+    container_name: overseerr
+    image: sctx/overseerr
+    restart: unless-stopped
+    ports:
+      - "5055:5055"
+    volumes:
+      - /home/sebastian/docker/overseerr/config:/app/config
+    environment:
+      - TZ=Europe/Berlin
+      # - PUID=1000
+      # - PGID=100
+      # - UMASK=022
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.overseerr.rule=Host(`watch.borynsky.de`)
+      - traefik.http.routers.overseerr.entrypoints=websecure
+      - traefik.http.routers.overseerr.tls=true
+      - traefik.http.routers.overseerr.tls.certresolver=cloudflare
+      - traefik.http.services.overseerr.loadbalancer.server.port=5055
+    dns:
+      - 1.1.1.1
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+
+#Doku: https://github.com/sct/overseerr
